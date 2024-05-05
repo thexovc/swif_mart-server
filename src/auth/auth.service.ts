@@ -41,8 +41,37 @@ export class AuthService {
       },
     });
 
+    console.log(existingUser);
+
     if (!existingUser) {
       throw new NotFoundException('Email is invalid');
+    }
+
+    const randCode = await this.generatePassCode();
+
+    if (!loginData.passCode) {
+      const uptUser = await this.prisma.user.update({
+        where: { email: loginData.email },
+        data: {
+          emailConfirmed: true,
+          passCode: String(randCode),
+        },
+      });
+
+      this.emailsService.sendDynamic(
+        [loginData.email],
+        {
+          passcode: randCode,
+        },
+        'auth/login.ejs',
+        `Swift Mart Login Passcode`,
+      );
+
+      return { message: 'passCode sent' };
+    }
+
+    if (!existingUser.passCode) {
+      throw new HttpException('Login to get passCode', HttpStatus.UNAUTHORIZED);
     }
 
     if (existingUser.passCode != loginData.passCode) {
@@ -60,15 +89,6 @@ export class AuthService {
         passCode: '',
       },
     });
-
-    this.emailsService.sendDynamic(
-      [loginData.email],
-      {
-        passcode: loginData.passCode,
-      },
-      'auth/login.ejs',
-      `Swift Mart Login Passcode`,
-    );
 
     return { access_token, data: uptUser };
   }

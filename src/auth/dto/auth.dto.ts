@@ -24,7 +24,7 @@ export class loginDto {
   @IsEmail()
   email: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   passCode: string;
 }
