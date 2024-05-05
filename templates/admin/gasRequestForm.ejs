@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <header class="wrapper gap">
+      <img src="./images/logo.svg" alt="" />
+    </header>
+    <main class="gap">
+      <p class="title gap">New Gas Request Form - <%= data.company_name %>,</p>
+      <p>Dear Admin,</p>
+      <p>
+        Gas Request Form has been submitted by <%= data.company_name %>. Please
+        review the details and take the necessary actions.
+      </p>
+      <p>Company Name: <span class="bold"> <%= data.full_name %></span></p>
+      <p>Contact Person: <span class="bold"><%= data.company_name %></span></p>
+      <p>Contact Number:<span class="bold"> <%= data.phone_number %></span></p>
+      <p class="gap">
+        Email Address:<span class="bold"> <%= data.email %></span>
+      </p>
+
+      <br />
+      <p>Thank you,</p>
+      <p>DataCoupon Team</p>
+    </main>
+  </body>
+</html>

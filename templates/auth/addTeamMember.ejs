@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <header class="wrapper gap">
+      <img src="./images/logo.svg" alt="" />
+    </header>
+    <main class="gap">
+      <p class="title gap">Welcome to the DataCoupon</p>
+      <p>Dear <%= data.fullName %>,</p>
+      <p class="gap">
+        You've been added to the DataCoupon We're thrilled to have you join us.
+      </p>
+      <br />
+
+      <p>Your login details are:</p>
+      <p>Email: <span class="primary"><%= data.email %></span></p>
+      <p class="gap">
+        Password: <span class="primary"><%= data.password %></span>
+      </p>
+      <br />
+
+      <p class="gap">If you have any questions, feel free to reach out.</p>
+
+      <p>Best regards,</p>
+      <p>DataCoupon Team</p>
+    </main>
+  </body>
+</html>

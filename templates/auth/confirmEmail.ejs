@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registration Confirmation</title>
+  </head>
+  <body>
+    <p>Dear <%= user.fullName %>,</p>
+    <p>Thank you for registering with DataCoupon!</p>
+    <p>
+      To complete the registration process, please click on the link below to
+      verify your email address:
+    </p>
+    <p><a href="<%= confirmationLink %>">Verify Email Address</a></p>
+    <p>
+      Once you've confirmed your email, you'll be able to access all the
+      features of DataCoupon.
+    </p>
+    <p>
+      If you have any questions or need assistance, feel free to reach out to
+      our support team.
+    </p>
+    <p>Welcome to DataCoupon!</p>
+    <br />
+    <p>Best regards,</p>
+    <p>DataCoupon Team</p>
+  </body>
+</html>
