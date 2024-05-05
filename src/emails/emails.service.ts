@@ -183,7 +183,7 @@ export class EmailsService {
 
       await transporter.sendMail(
         {
-          from: 'DataCoupon <GACNWebsite@gacn.com>',
+          from: 'Swif Mart <kyilaxtech@gmail.com>',
           to: email,
           subject: subject,
           html: renderedEmail,

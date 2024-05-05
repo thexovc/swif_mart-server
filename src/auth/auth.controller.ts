@@ -66,17 +66,17 @@ export class AuthController {
     }
   }
 
-  @Post('resetPassword')
-  async resetPassword(@Body(new ValidationPipe()) resetData: resetDto) {
-    try {
-      const res = await this.authService.resetPassword(resetData);
+  // @Post('resetPassword')
+  // async resetPassword(@Body(new ValidationPipe()) resetData: resetDto) {
+  //   try {
+  //     const res = await this.authService.resetPassword(resetData);
 
-      return res;
-    } catch (error) {
-      console.log({ error });
-      throw error;
-    }
-  }
+  //     return res;
+  //   } catch (error) {
+  //     console.log({ error });
+  //     throw error;
+  //   }
+  // }
 
   @Post('createUserAdmin')
   async createUserAdmin(@Body(new ValidationPipe()) data: createUserAdminDto) {

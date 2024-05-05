@@ -79,24 +79,24 @@ export class UsersController {
     }
   }
 
-  // change password
-  @UseGuards(AuthGuard)
-  @Roles()
-  @Put('changePassword')
-  async changePassword(
-    @Request() req,
-    @Body(new ValidationPipe()) UpdatePasswordDto: UpdatePasswordDto,
-  ) {
-    try {
-      return await this.usersService.updatePassword(
-        req.user.id,
-        UpdatePasswordDto,
-      );
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  }
+  // // change password
+  // @UseGuards(AuthGuard)
+  // @Roles()
+  // @Put('changePassword')
+  // async changePassword(
+  //   @Request() req,
+  //   @Body(new ValidationPipe()) UpdatePasswordDto: UpdatePasswordDto,
+  // ) {
+  //   try {
+  //     return await this.usersService.updatePassword(
+  //       req.user.id,
+  //       UpdatePasswordDto,
+  //     );
+  //   } catch (error) {
+  //     console.log(error);
+  //     throw error;
+  //   }
+  // }
 
   // get users routes
   @UseGuards(AuthGuard)

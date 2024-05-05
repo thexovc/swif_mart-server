@@ -19,14 +19,13 @@ export class UsersService {
           email: true,
           role: true,
           emailConfirmed: true,
-          api_key: true,
           phoneNumber: true,
           resetToken: true,
           currentHashedRefreshToken: true,
           createdAt: true,
           updatedAt: true,
           // Exclude password field
-          password: false,
+          passCode: false,
         },
       });
     } catch (error) {
@@ -46,52 +45,50 @@ export class UsersService {
         email: true,
         role: true,
         emailConfirmed: true,
-        api_key: true,
         phoneNumber: true,
         resetToken: true,
         currentHashedRefreshToken: true,
         createdAt: true,
         updatedAt: true,
         // Exclude password field
-        password: false,
+        passCode: false,
       },
     });
   }
 
-  async updatePassword(userId: string, UpdatePasswordDto: UpdatePasswordDto) {
-    if (UpdatePasswordDto.password != UpdatePasswordDto.confirmPassword) {
-      throw new HttpException(
-        'Password does not match',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+  // async updatePassword(userId: string, UpdatePasswordDto: UpdatePasswordDto) {
+  //   if (UpdatePasswordDto.password != UpdatePasswordDto.confirmPassword) {
+  //     throw new HttpException(
+  //       'Password does not match',
+  //       HttpStatus.BAD_REQUEST,
+  //     );
+  //   }
 
-    const hashedPassword = await bcrypt.hash(UpdatePasswordDto.password, 10);
+  //   const hashedPassword = await bcrypt.hash(UpdatePasswordDto.password, 10);
 
-    return await this.prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        password: hashedPassword,
-      },
-      select: {
-        id: true,
-        fullName: true,
-        email: true,
-        role: true,
-        emailConfirmed: true,
-        api_key: true,
-        phoneNumber: true,
-        resetToken: true,
-        currentHashedRefreshToken: true,
-        createdAt: true,
-        updatedAt: true,
-        // Exclude password field
-        password: false,
-      },
-    });
-  }
+  //   return await this.prisma.user.update({
+  //     where: {
+  //       id: userId,
+  //     },
+  //     data: {
+  //       password: hashedPassword,
+  //     },
+  //     select: {
+  //       id: true,
+  //       fullName: true,
+  //       email: true,
+  //       role: true,
+  //       emailConfirmed: true,
+  //       phoneNumber: true,
+  //       resetToken: true,
+  //       currentHashedRefreshToken: true,
+  //       createdAt: true,
+  //       updatedAt: true,
+  //       // Exclude password field
+  //       passCode: false,
+  //     },
+  //   });
+  // }
 
   // get users routes
 
@@ -117,14 +114,13 @@ export class UsersService {
         email: true,
         role: true,
         emailConfirmed: true,
-        api_key: true,
         phoneNumber: true,
         resetToken: true,
         currentHashedRefreshToken: true,
         createdAt: true,
         updatedAt: true,
         // Exclude password field
-        password: false,
+        passCode: false,
       },
     });
 
@@ -156,14 +152,13 @@ export class UsersService {
         email: true,
         role: true,
         emailConfirmed: true,
-        api_key: true,
         phoneNumber: true,
         resetToken: true,
         currentHashedRefreshToken: true,
         createdAt: true,
         updatedAt: true,
         // Exclude password field
-        password: false,
+        passCode: false,
       },
     });
 

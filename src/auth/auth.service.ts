@@ -45,26 +45,32 @@ export class AuthService {
       throw new NotFoundException('Email is invalid');
     }
 
-    const passwordMatch = await bcrypt.compare(
-      loginData.password,
-      existingUser.password,
-    );
-
-    if (!passwordMatch) {
-      throw new HttpException('password incorrect', HttpStatus.UNAUTHORIZED);
-    }
-
-    if (!existingUser.emailConfirmed) {
-      throw new HttpException('email not confirmed', HttpStatus.UNAUTHORIZED);
+    if (existingUser.passCode != loginData.passCode) {
+      throw new HttpException('passCode incorrect', HttpStatus.UNAUTHORIZED);
     }
 
     const access_token = jwt.sign(existingUser, this.secretKey, {
-      expiresIn: '30m',
+      expiresIn: '1h',
     });
 
-    const { password, ...rest } = existingUser;
+    const uptUser = await this.prisma.user.update({
+      where: { email: loginData.email },
+      data: {
+        emailConfirmed: true,
+        passCode: '',
+      },
+    });
 
-    return { access_token, data: rest };
+    this.emailsService.sendDynamic(
+      [loginData.email],
+      {
+        passcode: loginData.passCode,
+      },
+      'auth/login.ejs',
+      `Swift Mart Login Passcode`,
+    );
+
+    return { access_token, data: uptUser };
   }
 
   //   register
@@ -79,30 +85,27 @@ export class AuthService {
       throw new BadRequestException('Email already registered');
     }
 
-    const { password, email, ...data } = createUserData;
+    const { email } = createUserData;
 
-    const hashedPassword = await bcrypt.hash(password, this.saltRounds);
-
-    let api_key = this.generateUniqueApiKey();
-
-    // Check if api_key already exists, if so, generate another one
-    while (await this.apiKeyExists(api_key)) {
-      api_key = this.generateUniqueApiKey();
-    }
+    const randCode = await this.generatePassCode();
 
     const newUser = await this.prisma.user.create({
       data: {
-        ...data,
         email: email.toLowerCase(),
-        api_key,
-        password: hashedPassword,
+        passCode: String(randCode),
       },
     });
 
-    // await this.emailsService.sendWelcomeEmail(newUser);
-    await this.generateAndSendToken(newUser.email);
+    this.emailsService.sendDynamic(
+      [email],
+      {
+        passcode: randCode,
+      },
+      'auth/welcome.ejs',
+      `Welcome to Swift Mart! Your Registration Passcode`,
+    );
 
-    return { message: 'registration successfull check email to confirm!' };
+    return { message: 'registration successfull check email for passCode!' };
   }
 
   // verify token
@@ -170,52 +173,52 @@ export class AuthService {
     this.emailsService.sendResetLink(user, email, forgotLink);
   }
 
-  // reset password
-  async resetPassword(resetData: resetDto): Promise<any> {
-    try {
-      const decoded: JwtPayload = jwt.verify(
-        resetData.token,
-        this.secretKey,
-      ) as JwtPayload;
+  // // reset password
+  // async resetPassword(resetData: resetDto): Promise<any> {
+  //   try {
+  //     const decoded: JwtPayload = jwt.verify(
+  //       resetData.token,
+  //       this.secretKey,
+  //     ) as JwtPayload;
 
-      if (decoded && decoded.id) {
-        const user = await this.prisma.user.findUnique({
-          where: { id: decoded.id },
-        });
+  //     if (decoded && decoded.id) {
+  //       const user = await this.prisma.user.findUnique({
+  //         where: { id: decoded.id },
+  //       });
 
-        const hashedPassword = await bcrypt.hash(
-          resetData.password,
-          this.saltRounds,
-        );
+  //       const hashedPassword = await bcrypt.hash(
+  //         resetData.password,
+  //         this.saltRounds,
+  //       );
 
-        if (user) {
-          await this.prisma.user.update({
-            where: { id: user.id },
-            data: {
-              password: hashedPassword,
-            },
-          });
+  //       if (user) {
+  //         await this.prisma.user.update({
+  //           where: { id: user.id },
+  //           data: {
+  //             password: hashedPassword,
+  //           },
+  //         });
 
-          this.emailsService.sendPasswordChanged(user, user.email);
+  //         this.emailsService.sendPasswordChanged(user, user.email);
 
-          return { message: 'password reset successfully!' };
-        } else {
-          throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-        }
-      } else {
-        throw new HttpException('invalid token', HttpStatus.NOT_ACCEPTABLE);
-      }
-    } catch (error) {
-      if (error instanceof TokenExpiredError) {
-        throw new HttpException('expired token', HttpStatus.UNAUTHORIZED); // Handle expired tokens
-      }
+  //         return { message: 'password reset successfully!' };
+  //       } else {
+  //         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+  //       }
+  //     } else {
+  //       throw new HttpException('invalid token', HttpStatus.NOT_ACCEPTABLE);
+  //     }
+  //   } catch (error) {
+  //     if (error instanceof TokenExpiredError) {
+  //       throw new HttpException('expired token', HttpStatus.UNAUTHORIZED); // Handle expired tokens
+  //     }
 
-      throw new HttpException(
-        error.message || 'invalid token',
-        HttpStatus.NOT_ACCEPTABLE,
-      );
-    }
-  }
+  //     throw new HttpException(
+  //       error.message || 'invalid token',
+  //       HttpStatus.NOT_ACCEPTABLE,
+  //     );
+  //   }
+  // }
 
   // admin create user
   async adminCreateUser(data: createUserAdminDto): Promise<any> {
@@ -254,21 +257,15 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(data.password, this.saltRounds);
 
-    let api_key = this.generateUniqueApiKey();
-
-    // Check if api_key already exists, if so, generate another one
-    while (await this.apiKeyExists(api_key)) {
-      api_key = this.generateUniqueApiKey();
-    }
+    let randCode = await this.generatePassCode();
 
     await this.prisma.user.create({
       data: {
         fullName,
         email,
         role,
-        password: hashedPassword,
+        passCode: String(randCode),
         emailConfirmed: true,
-        api_key,
       },
     });
 
@@ -284,18 +281,8 @@ export class AuthService {
     return { message: 'registration successful check email to confirm!' };
   }
 
-  private generateUniqueApiKey(): string {
-    // Generate a unique API key
-    return uuidv4();
-  }
-
-  private async apiKeyExists(api_key: string): Promise<boolean> {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        api_key,
-      },
-    });
-    return !!user;
+  private async generatePassCode(): Promise<number> {
+    return Math.floor(1000 + Math.random() * 9000);
   }
 
   private async generateAndSendToken(email: string) {

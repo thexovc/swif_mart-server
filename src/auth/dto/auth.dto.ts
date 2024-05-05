@@ -15,20 +15,8 @@ enum UserRole {
 
 export class RegisterDto {
   @IsNotEmpty()
-  @IsString()
-  fullName: string;
-
-  @IsNotEmpty()
   @IsEmail()
   email: string;
-
-  @IsNotEmpty()
-  @IsString()
-  password: string;
-
-  @IsOptional()
-  @IsString()
-  phoneNumber?: string;
 }
 
 export class loginDto {
@@ -38,7 +26,7 @@ export class loginDto {
 
   @IsNotEmpty()
   @IsString()
-  password: string;
+  passCode: string;
 }
 
 export class forgotDto {
