@@ -4,10 +4,10 @@ export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
     getUser(req: any): Promise<{
-        id: string;
         email: string;
         fullName: string;
         role: import(".prisma/client").$Enums.UserRole;
+        id: string;
         emailConfirmed: boolean;
         phoneNumber: string;
         resetToken: string;
@@ -16,10 +16,10 @@ export declare class UsersController {
         updatedAt: Date;
     }>;
     adminGetUser(id: any): Promise<{
-        id: string;
         email: string;
         fullName: string;
         role: import(".prisma/client").$Enums.UserRole;
+        id: string;
         emailConfirmed: boolean;
         phoneNumber: string;
         resetToken: string;
@@ -28,10 +28,10 @@ export declare class UsersController {
         updatedAt: Date;
     }>;
     updateUser(req: any, UpdateUserDto: UpdateUserDto): Promise<{
-        id: string;
         email: string;
         fullName: string;
         role: import(".prisma/client").$Enums.UserRole;
+        id: string;
         emailConfirmed: boolean;
         phoneNumber: string;
         resetToken: string;
@@ -40,10 +40,10 @@ export declare class UsersController {
         updatedAt: Date;
     }>;
     adminUpdateUser(id: any, UpdateUserDto: UpdateUserDto): Promise<{
-        id: string;
         email: string;
         fullName: string;
         role: import(".prisma/client").$Enums.UserRole;
+        id: string;
         emailConfirmed: boolean;
         phoneNumber: string;
         resetToken: string;

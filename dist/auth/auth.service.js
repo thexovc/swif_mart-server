@@ -31,7 +31,7 @@ let AuthService = class AuthService {
         });
         console.log(existingUser);
         if (!existingUser) {
-            throw new common_1.NotFoundException('Email is invalid');
+            return await this.register(loginData);
         }
         const randCode = await this.generatePassCode();
         if (!loginData.passCode) {

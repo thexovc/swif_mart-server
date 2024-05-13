@@ -20,16 +20,16 @@ import {
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('register')
-  async register(@Body(new ValidationPipe()) registerDto: RegisterDto) {
-    try {
-      const res = await this.authService.register(registerDto);
-      return res;
-    } catch (error) {
-      console.log({ error });
-      throw error;
-    }
-  }
+  // @Post('register')
+  // async register(@Body(new ValidationPipe()) registerDto: RegisterDto) {
+  //   try {
+  //     const res = await this.authService.register(registerDto);
+  //     return res;
+  //   } catch (error) {
+  //     console.log({ error });
+  //     throw error;
+  //   }
+  // }
 
   @Post('login')
   async login(@Body(new ValidationPipe()) loginData: loginDto) {

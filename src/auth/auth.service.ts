@@ -44,7 +44,7 @@ export class AuthService {
     console.log(existingUser);
 
     if (!existingUser) {
-      throw new NotFoundException('Email is invalid');
+      return await this.register(loginData);
     }
 
     const randCode = await this.generatePassCode();
